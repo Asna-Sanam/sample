@@ -21,5 +21,7 @@ jobs:
 
       - name: Deploy using rsync
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" ./ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+          rsync -avz --exclude='.git' --exclude='.github' --exclude='*.yml' \
+          -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" ./ \
+          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
+
