@@ -4,8 +4,8 @@ on:
       - main
 
 jobs:
-  run_ssh_login:
-    name: run_ssh_login
+  deploy:
+    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
@@ -19,9 +19,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy with rsync
+      - name: Deploy using rsync
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            cd ${{ secrets.WORK_DIR }}
-            ls -la
-          EOF
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa" ./ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}
